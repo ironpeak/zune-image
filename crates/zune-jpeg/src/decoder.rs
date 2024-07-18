@@ -298,7 +298,7 @@ where
     /// -`Some(Colorspace)`: Input colorspace
     /// - None : Indicates the headers weren't decoded
     #[must_use]
-    pub fn input_colorspace(&self) -> Option<ColorSpace> {
+    pub fn get_input_colorspace(&self) -> Option<ColorSpace> {
         return if self.headers_decoded { Some(self.input_colorspace) } else { None };
     }
     /// Set decoder options
@@ -659,7 +659,7 @@ where
     ///output array will be in
     ///- `None
     #[must_use]
-    pub fn output_colorspace(&self) -> Option<ColorSpace> {
+    pub fn get_output_colorspace(&self) -> Option<ColorSpace> {
         return if self.headers_decoded {
             Some(self.options.jpeg_get_out_colorspace())
         } else {
