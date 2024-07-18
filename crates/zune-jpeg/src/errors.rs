@@ -12,8 +12,6 @@
 use alloc::string::String;
 use core::fmt::{Debug, Display, Formatter};
 
-use zune_core::bytestream::ZByteIoError;
-
 use crate::misc::{
     START_OF_FRAME_EXT_AR, START_OF_FRAME_EXT_SEQ, START_OF_FRAME_LOS_SEQ,
     START_OF_FRAME_LOS_SEQ_AR, START_OF_FRAME_PROG_DCT_AR
@@ -49,8 +47,6 @@ pub enum DecodeErrors {
     LargeDimensions(usize),
     /// Too small output for size
     TooSmallOutput(usize, usize),
-
-    IoErrors(ZByteIoError)
 }
 
 #[cfg(feature = "std")]
@@ -62,11 +58,6 @@ impl From<&'static str> for DecodeErrors {
     }
 }
 
-impl From<ZByteIoError> for DecodeErrors {
-    fn from(data: ZByteIoError) -> Self {
-        return Self::IoErrors(data);
-    }
-}
 impl Debug for DecodeErrors {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         match &self
@@ -97,7 +88,6 @@ impl Debug for DecodeErrors {
                 "Too large dimensions {dimensions},library supports up to {}", crate::decoder::MAX_DIMENSIONS
             ),
             Self::TooSmallOutput(expected, found) => write!(f, "Too small output, expected buffer with at least {expected} bytes but got one with {found} bytes"),
-            Self::IoErrors(error)=>write!(f,"I/O errors {error:?}"),
         }
     }
 }

@@ -9,7 +9,7 @@
 use alloc::{format, vec};
 use core::cmp::min;
 
-use zune_core::bytestream::ZByteReaderTrait;
+use zune_core::bytestream::ZReaderTrait;
 use zune_core::colorspace::ColorSpace;
 use zune_core::colorspace::ColorSpace::Luma;
 use zune_core::log::{error, trace, warn};
@@ -27,7 +27,7 @@ use crate::JpegDecoder;
 
 pub const DCT_BLOCK: usize = 64;
 
-impl<T: ZByteReaderTrait> JpegDecoder<T> {
+impl<T: ZReaderTrait> JpegDecoder<T> {
     /// Check for existence of DC and AC Huffman Tables
     pub(crate) fn check_tables(&self) -> Result<(), DecodeErrors> {
         // check that dc and AC tables exist outside the hot path
@@ -187,7 +187,7 @@ impl<T: ZByteReaderTrait> JpegDecoder<T> {
             if stream.overread_by > 37
             // favourite number :)
             {
-                if self.options.strict_mode() {
+                if self.options.get_strict_mode() {
                     return Err(DecodeErrors::FormatStatic("Premature end of buffer"));
                 };
 
@@ -295,7 +295,7 @@ impl<T: ZByteReaderTrait> JpegDecoder<T> {
                         self.handle_rst(stream)?;
                     }
                 } else {
-                    if self.options.strict_mode() {
+                    if self.options.get_strict_mode() {
                         return Err(DecodeErrors::Format(format!(
                             "Marker {m:?} found where not expected"
                         )));
